@@ -61,6 +61,7 @@ void MCGeneration() {
 
   auto outFile = std::unique_ptr<TFile>(new TFile("data.root", "recreate"));
   auto tree = new TTree("temp", "temp");
+  tree->SetDirectory(0);
   tree->Branch("photons", &photons);
   tree->Branch("jets", &jets);
 
@@ -318,18 +319,21 @@ void MCGeneration() {
   // std::iota(v.begin(), v.end(), l.begin());
   // std::shuffle(v.begin(), v.end(), std::mt19937{std::random_device{}()});
 
-  // auto shuffled_ch = new TTree("Data", "Data");
-  // float ph1[4], ph2[4];
-  // shuffled_ch->Branch("photon1", ph1, "ph1[4]/F");
-  // shuffled_ch->Branch("photon2", ph2, "ph2[4]/F");
-  // for (const auto &i : v) {
-  //   tree->GetEntry(*i);
-  //
-  //   photons.at(0).GetXYZT(ph1);
-  //   photons.at(1).GetXYZT(ph2);
-  //
-  //   shuffled_ch->Fill();
-  // }
+  auto shuffled_ch = new TTree("Data", "Data");
+  float ph1[4], ph2[4];
+  shuffled_ch->Branch("photon1", ph1, "ph1[4]/F");
+  shuffled_ch->Branch("photon2", ph2, "ph2[4]/F");
+  for (int i=0; i<tree->GetEntries(); i++) {
+    tree->GetEntry(i);
 
-  outFile->WriteTObject(tree, "Data");
+    photons.at(0).GetXYZT(ph1);
+    photons.at(1).GetXYZT(ph2);
+
+    shuffled_ch->Fill();
+  }
+
+  delete tree;
+
+  outFile->WriteTObject(shuffled_ch, "Data");
+  outFile->Close();
 }
