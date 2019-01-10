@@ -41,8 +41,12 @@ void EvGeneration() {
   float jRes = 0.3;
   int nJetMean = 2;
 
-  int nBkg = gRandom->Poisson(10000);
-  int nSig = gRandom->Poisson(200);
+  // int nBkg = gRandom->Poisson(2000);
+  // int nSig = gRandom->Poisson(10);
+
+  int nBkg = gRandom->Poisson(100000);
+  int nSig = gRandom->Poisson(400);
+
   // int nSig = gRandom->Poisson(10000);
 
   cout << nBkg << " background events" << endl;
